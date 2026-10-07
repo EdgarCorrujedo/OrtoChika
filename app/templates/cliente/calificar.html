@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Calificar servicio · OrtoChika Web{% endblock %}
+{% block content %}
+<div class="card shadow p-4 mx-auto auth-card">
+  <h4 class="mb-1">Calificar servicio</h4>
+  <p class="text-muted">{{ cotizacion.producto.nombre }}</p>
+
+  <form method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="mb-3">
+      <label class="form-label d-block">Calificación</label>
+      {% for n in [5, 4, 3, 2, 1] %}
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="calificacion" id="cal{{ n }}" value="{{ n }}"
+                 {{ 'checked' if request.form.get('calificacion') == n|string }} required>
+          <label class="form-check-label" for="cal{{ n }}">
+            <span class="text-warning">{{ '★' * n }}</span><span class="text-muted">{{ '★' * (5 - n) }}</span>
+          </label>
+        </div>
+      {% endfor %}
+    </div>
+    <div class="mb-3">
+      <label for="comentario" class="form-label">Comentario (opcional)</label>
+      <textarea class="form-control" id="comentario" name="comentario" rows="3" maxlength="1000">{{ request.form.get('comentario', '') }}</textarea>
+    </div>
+    <div class="d-flex gap-2">
+      <button type="submit" class="btn btn-warning fw-bold">Enviar reseña</button>
+      <a href="{{ url_for('cliente.panel', tab='terminados') }}" class="btn btn-outline-secondary">Cancelar</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

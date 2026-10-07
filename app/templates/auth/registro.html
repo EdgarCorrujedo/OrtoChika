@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Registro de cliente · OrtoChika Web{% endblock %}
+{% block content %}
+<div class="card shadow p-4 mx-auto auth-card">
+  <div class="text-center mb-3">
+    <img src="{{ url_for('static', filename='img/logo.jpg') }}" alt="Logo OrtoChika"
+         class="img-fluid rounded shadow auth-logo" onerror="this.remove()">
+  </div>
+  <h3 class="text-center mb-1 text-primary">OrtoChika Web</h3>
+  <p class="text-center text-muted mb-3">Registro de nuevo cliente</p>
+
+  <form method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="mb-3">
+      <label for="nombre" class="form-label">Nombre completo</label>
+      <input type="text" class="form-control" id="nombre" name="nombre" maxlength="100"
+             value="{{ request.form.get('nombre', '') }}" placeholder="Ej. Juan Pérez" required>
+    </div>
+    <div class="mb-3">
+      <label for="correo" class="form-label">Correo electrónico</label>
+      <input type="email" class="form-control" id="correo" name="correo" maxlength="120"
+             value="{{ request.form.get('correo', '') }}" placeholder="ejemplo@correo.com" required>
+    </div>
+    <div class="mb-3">
+      <label for="telefono" class="form-label">Teléfono (será tu contraseña inicial)</label>
+      <input type="tel" class="form-control" id="telefono" name="telefono" pattern="[0-9]{10,15}"
+             title="Solo dígitos, de 10 a 15" value="{{ request.form.get('telefono', '') }}"
+             placeholder="Ej. 6181234567" required>
+    </div>
+    <button type="submit" class="btn btn-success w-100 fw-bold">Registrarme</button>
+  </form>
+
+  <div class="text-center mt-3">
+    <a href="{{ url_for('auth.login') }}" class="text-decoration-none small">
+      ¿Ya tienes cuenta? Inicia sesión aquí
+    </a>
+  </div>
+</div>
+{% endblock %}

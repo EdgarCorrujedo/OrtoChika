@@ -1,0 +1,12 @@
+/* Estilos propios de OrtoChika */
+.auth-card { max-width: 420px; }
+.auth-logo { max-width: 130px; height: auto; }
+.producto-imagen { height: 160px; object-fit: cover; }
+.producto-sin-imagen {
+  display: flex; align-items: center; justify-content: center;
+  background: #e9ecef; color: #6c757d;
+  border-top-left-radius: inherit; border-top-right-radius: inherit;
+}
+.producto-detalle-imagen { height: 260px; }
+.miniatura { width: 48px; height: 48px; object-fit: cover; }
+.miniatura-grande { max-height: 120px; }

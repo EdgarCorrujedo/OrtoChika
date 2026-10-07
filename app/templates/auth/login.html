@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Iniciar sesión · OrtoChika Web{% endblock %}
+{% block content %}
+<div class="card shadow p-4 mx-auto auth-card">
+  <div class="text-center mb-3">
+    <img src="{{ url_for('static', filename='img/logo.jpg') }}" alt="Logo OrtoChika"
+         class="img-fluid rounded shadow auth-logo" onerror="this.remove()">
+  </div>
+  <h3 class="text-center mb-1 text-primary">OrtoChika Web</h3>
+  <p class="text-center text-muted mb-4">Gestión de Servicios Ortopédicos</p>
+
+  <h5 class="card-title mb-3">Iniciar sesión</h5>
+  <form method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="mb-3">
+      <label for="correo" class="form-label">Correo electrónico</label>
+      <input type="email" class="form-control" id="correo" name="correo"
+             placeholder="ejemplo@correo.com" required>
+    </div>
+    <div class="mb-3">
+      <label for="contrasena" class="form-label">Contraseña / Teléfono</label>
+      <input type="password" class="form-control" id="contrasena" name="contrasena" required>
+    </div>
+    <button type="submit" class="btn btn-primary w-100 fw-bold">Ingresar</button>
+  </form>
+
+  <div class="text-center mt-3">
+    <a href="{{ url_for('auth.registro') }}" class="text-decoration-none small text-success fw-bold">
+      ¿No tienes cuenta? Regístrate aquí
+    </a>
+  </div>
+</div>
+{% endblock %}

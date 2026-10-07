@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Solicitar cotización · OrtoChika Web{% endblock %}
+{% block content %}
+<div class="card shadow p-4 mx-auto auth-card">
+  <h4 class="mb-1">Solicitar cotización</h4>
+  <p class="text-muted">{{ producto.nombre }}</p>
+
+  <form method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    {% if current_user.is_authenticated %}
+      <p>Registraremos la cotización en tu cuenta y podrás darle seguimiento desde tu panel.</p>
+    {% else %}
+      <div class="mb-3">
+        <label for="nombre" class="form-label">Nombre completo</label>
+        <input type="text" class="form-control" id="nombre" name="nombre" maxlength="100"
+               value="{{ request.form.get('nombre', '') }}" required>
+      </div>
+      <div class="mb-3">
+        <label for="correo" class="form-label">Correo electrónico</label>
+        <input type="email" class="form-control" id="correo" name="correo" maxlength="120"
+               value="{{ request.form.get('correo', '') }}" required>
+      </div>
+      <div class="mb-3">
+        <label for="telefono" class="form-label">Teléfono</label>
+        <input type="tel" class="form-control" id="telefono" name="telefono" pattern="[0-9]{10,15}"
+               title="Solo dígitos, de 10 a 15" value="{{ request.form.get('telefono', '') }}" required>
+        <div class="form-text">Crearemos tu cuenta automáticamente; tu teléfono será tu contraseña inicial.</div>
+      </div>
+    {% endif %}
+    <div class="d-flex gap-2">
+      <button type="submit" class="btn btn-primary fw-bold">Enviar solicitud</button>
+      <a href="{{ url_for('catalogo.detalle', id_producto=producto.id_producto) }}"
+         class="btn btn-outline-secondary">Cancelar</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

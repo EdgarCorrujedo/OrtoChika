@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}Mi panel · OrtoChika Web{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3 class="mb-0">Mi panel</h3>
+  <a href="{{ url_for('catalogo.index') }}" class="btn btn-outline-primary btn-sm">Ir al catálogo</a>
+</div>
+
+<ul class="nav nav-tabs mb-3">
+  {% for clave, titulo in pestanas.items() %}
+    <li class="nav-item">
+      <a class="nav-link {{ 'active' if clave == pestana }}" href="{{ url_for('cliente.panel', tab=clave) }}">
+        {{ titulo }} <span class="badge text-bg-secondary">{{ grupos[clave]|length }}</span>
+      </a>
+    </li>
+  {% endfor %}
+</ul>
+
+<div class="table-responsive">
+  <table class="table table-striped align-middle bg-white shadow-sm">
+    <thead>
+      <tr>
+        <th>Producto / servicio</th>
+        {% if pestana == 'cotizaciones' %}
+          <th>Fecha</th><th>Estatus</th><th class="text-end">Monto estimado</th>
+        {% elif pestana == 'proceso' %}
+          <th>Inicio</th><th>Estatus</th><th>Especialista</th>
+        {% else %}
+          <th>Cierre</th><th>Tu calificación</th>
+        {% endif %}
+        <th class="text-end">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for c in filas %}
+        <tr>
+          <td>{{ c.producto.nombre }}</td>
+          {% if pestana == 'cotizaciones' %}
+            <td>{{ c.fecha.strftime('%d/%m/%Y') if c.fecha else '—' }}</td>
+            <td><span class="badge text-bg-warning">{{ c.estatus }}</span></td>
+            <td class="text-end">{% if c.monto_estimado is not none %}${{ "{:,.2f}".format(c.monto_estimado) }}{% else %}—{% endif %}</td>
+          {% elif pestana == 'proceso' %}
+            <td>{{ c.servicio.fecha_inicio.strftime('%d/%m/%Y') if c.servicio.fecha_inicio else '—' }}</td>
+            <td><span class="badge text-bg-info">{{ c.servicio.estatus }}</span></td>
+            <td>{{ c.servicio.especialista.usuario.nombre if c.servicio.especialista else 'Por asignar' }}</td>
+          {% else %}
+            <td>{{ c.servicio.fecha_cierre.strftime('%d/%m/%Y') }}</td>
+            <td>
+              {% if c.servicio.id_servicio in calificados %}
+                <span class="text-warning">&#9733;</span> Calificado
+              {% else %}
+                <span class="text-muted">Sin calificar</span>
+              {% endif %}
+            </td>
+          {% endif %}
+          <td class="text-end text-nowrap">
+            <a href="{{ url_for('cliente.detalle', id_cotizacion=c.id_cotizacion) }}"
+               class="btn btn-outline-primary btn-sm">Ver detalle</a>
+            {% if pestana == 'terminados' and c.servicio.id_servicio not in calificados %}
+              <a href="{{ url_for('cliente.calificar', id_cotizacion=c.id_cotizacion) }}"
+                 class="btn btn-warning btn-sm">Calificar servicio</a>
+            {% endif %}
+          </td>
+        </tr>
+      {% else %}
+        <tr>
+          <td colspan="5" class="text-center text-muted py-4">
+            {% if pestana == 'cotizaciones' %}
+              Aún no tienes cotizaciones pendientes. Explora el <a href="{{ url_for('catalogo.index') }}">catálogo</a> para solicitar una.
+            {% elif pestana == 'proceso' %}
+              No tienes servicios en proceso.
+            {% else %}
+              Aún no tienes servicios terminados.
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

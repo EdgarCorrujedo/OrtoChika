@@ -1,0 +1,28 @@
+{% extends "admin/layout.html" %}
+{% block panel %}
+<h3 class="mb-3">Resumen general</h3>
+
+<h6 class="text-muted text-uppercase">Servicios</h6>
+<div class="row g-3 mb-4">
+  {% for etiqueta, valor in indicadores.items() %}
+    <div class="col-6 col-lg-3">
+      <div class="card shadow-sm text-center p-3">
+        <div class="display-6 fw-bold text-primary">{{ valor }}</div>
+        <div class="text-muted">{{ etiqueta }}</div>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+
+<h6 class="text-muted text-uppercase">Negocio</h6>
+<div class="row g-3">
+  {% for etiqueta, valor in totales.items() %}
+    <div class="col-6 col-lg-4">
+      <div class="card shadow-sm text-center p-3">
+        <div class="display-6 fw-bold">{{ valor }}</div>
+        <div class="text-muted">{{ etiqueta }}</div>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+{% endblock %}

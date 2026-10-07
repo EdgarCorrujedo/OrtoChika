@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Panel · OrtoChika Web{% endblock %}
+{% block content %}
+<div class="card shadow-sm p-4">
+  <h3>¡Bienvenido/a, {{ current_user.nombre }}!</h3>
+  <hr>
+  {% if current_user.rol == 'vendedor' %}
+    <div class="alert alert-warning mb-0">
+      <h5>Panel del vendedor / especialista</h5>
+      <p class="mb-0">Aquí verás los servicios asignados para actualizar avances y observaciones.</p>
+    </div>
+  {% elif current_user.rol == 'analista' %}
+    <div class="alert alert-secondary mb-0">
+      <h5>Panel del analista / gerente</h5>
+      <p class="mb-0">Aquí consultarás los estadísticos e historial de servicios cotizados, contratados, en proceso y terminados.</p>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

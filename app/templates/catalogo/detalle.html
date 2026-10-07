@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}{{ producto.nombre }} · OrtoChika Web{% endblock %}
+{% block content %}
+<a href="{{ url_for('catalogo.index') }}" class="text-decoration-none small">&larr; Volver al catálogo</a>
+
+<div class="row g-4 mt-1">
+  <div class="col-md-5">
+    {% if producto.imagen %}
+      <img src="{{ url_for('static', filename='img/' ~ producto.imagen) }}" alt="{{ producto.nombre }}"
+           class="img-fluid rounded shadow-sm">
+    {% else %}
+      <div class="producto-sin-imagen producto-detalle-imagen rounded shadow-sm">Sin imagen</div>
+    {% endif %}
+  </div>
+  <div class="col-md-7">
+    <span class="badge text-bg-secondary mb-2">{{ producto.categoria }}</span>
+    <h2>{{ producto.nombre }}</h2>
+    {% if producto.precio_aprox is not none %}
+      <p class="fs-4 fw-bold text-primary">
+        Desde ${{ "{:,.2f}".format(producto.precio_aprox) }} <small class="text-muted fs-6 fw-normal">MXN aprox.</small>
+      </p>
+    {% endif %}
+    <p>{{ producto.descripcion }}</p>
+    {% if not current_user.is_authenticated or current_user.rol == 'cliente' %}
+      <a href="{{ url_for('catalogo.cotizar', id_producto=producto.id_producto) }}" class="btn btn-primary">Solicitar cotización</a>
+    {% endif %}
+  </div>
+</div>
+
+<hr class="my-4">
+<h4>Reseñas
+  {% if promedio is not none %}
+    <small class="text-muted fs-6">{{ "%.1f"|format(promedio) }} / 5 · {{ resenas|length }} reseña(s)</small>
+  {% endif %}
+</h4>
+{% for r in resenas %}
+  <div class="card card-body shadow-sm mb-2">
+    <div class="text-warning">{{ '★' * r.calificacion }}<span class="text-muted">{{ '★' * (5 - r.calificacion) }}</span></div>
+    <p class="mb-1">{{ r.comentario }}</p>
+    <small class="text-muted">{{ r.cliente.usuario.nombre.split()|first }}</small>
+  </div>
+{% else %}
+  <p class="text-muted">Aún no hay reseñas para este producto o servicio.</p>
+{% endfor %}
+{% endblock %}

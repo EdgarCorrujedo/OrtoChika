@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Detalle · OrtoChika Web{% endblock %}
+{% block content %}
+{% set servicio = cotizacion.servicio %}
+<a href="{{ url_for('cliente.panel') }}" class="text-decoration-none small">&larr; Volver a mi panel</a>
+
+<div class="card shadow-sm p-4 mt-2 mb-4">
+  <h4>{{ cotizacion.producto.nombre }}</h4>
+  <dl class="row mb-0">
+    <dt class="col-sm-3">Cotización</dt>
+    <dd class="col-sm-9">
+      {{ cotizacion.fecha.strftime('%d/%m/%Y') if cotizacion.fecha else '—' }} ·
+      <span class="badge text-bg-warning">{{ cotizacion.estatus }}</span>
+    </dd>
+    <dt class="col-sm-3">Monto estimado</dt>
+    <dd class="col-sm-9">
+      {% if cotizacion.monto_estimado is not none %}${{ "{:,.2f}".format(cotizacion.monto_estimado) }} MXN{% else %}—{% endif %}
+    </dd>
+    {% if servicio %}
+      <dt class="col-sm-3">Servicio</dt>
+      <dd class="col-sm-9">
+        <span class="badge text-bg-info">{{ servicio.estatus }}</span>
+        {% if servicio.fecha_cierre %}· cerrado el {{ servicio.fecha_cierre.strftime('%d/%m/%Y') }}{% endif %}
+      </dd>
+      <dt class="col-sm-3">Especialista</dt>
+      <dd class="col-sm-9">{{ servicio.especialista.usuario.nombre if servicio.especialista else 'Por asignar' }}</dd>
+    {% endif %}
+  </dl>
+</div>
+
+{% if servicio %}
+  <h5>Seguimiento del servicio</h5>
+  {% for o in servicio.observaciones %}
+    <div class="card card-body shadow-sm mb-2">
+      <p class="mb-1">{{ o.texto }}</p>
+      <small class="text-muted">{{ o.autor }} · {{ o.fecha.strftime('%d/%m/%Y %H:%M') if o.fecha else '' }}</small>
+    </div>
+  {% else %}
+    <p class="text-muted">Todavía no hay observaciones del especialista.</p>
+  {% endfor %}
+
+  {% if servicio.fecha_cierre %}
+    <hr class="my-4">
+    <h5>Tu reseña</h5>
+    {% if resena %}
+      <div class="card card-body shadow-sm">
+        <div class="text-warning">{{ '★' * resena.calificacion }}<span class="text-muted">{{ '★' * (5 - resena.calificacion) }}</span></div>
+        {% if resena.comentario %}<p class="mb-0">{{ resena.comentario }}</p>{% endif %}
+      </div>
+    {% else %}
+      <a href="{{ url_for('cliente.calificar', id_cotizacion=cotizacion.id_cotizacion) }}"
+         class="btn btn-warning">Calificar servicio</a>
+    {% endif %}
+  {% endif %}
+{% else %}
+  <div class="alert alert-light border">
+    Tu cotización está registrada. Cuando contrates el servicio, aquí verás su seguimiento.
+  </div>
+{% endif %}
+{% endblock %}

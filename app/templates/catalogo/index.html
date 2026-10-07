@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Catálogo · OrtoChika Web{% endblock %}
+{% block content %}
+<section class="text-center py-3 mb-3">
+  <h1 class="fw-bold text-primary">Ortopédica Chika</h1>
+  <p class="lead text-muted mb-0">
+    Productos y servicios ortopédicos: venta, ajuste, mantenimiento y entrega a domicilio.
+  </p>
+</section>
+
+<form method="get" class="row g-2 mb-4">
+  <div class="col-md-6">
+    <input type="search" name="q" class="form-control" value="{{ q }}"
+           placeholder="Buscar producto o servicio">
+  </div>
+  <div class="col-md-4">
+    <select name="categoria" class="form-select">
+      <option value="">Todas las categorías</option>
+      {% for c in categorias %}
+        <option value="{{ c }}" {{ 'selected' if c == categoria }}>{{ c }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-md-2 d-grid">
+    <button type="submit" class="btn btn-primary">Buscar</button>
+  </div>
+</form>
+
+<div class="row g-4">
+  {% for p in productos %}
+    <div class="col-sm-6 col-lg-4 col-xl-3">
+      <div class="card h-100 shadow-sm">
+        {% if p.imagen %}
+          <img src="{{ url_for('static', filename='img/' ~ p.imagen) }}" alt="{{ p.nombre }}"
+               class="card-img-top producto-imagen">
+        {% else %}
+          <div class="producto-imagen producto-sin-imagen">Sin imagen</div>
+        {% endif %}
+        <div class="card-body d-flex flex-column">
+          <span class="badge text-bg-secondary align-self-start mb-2">{{ p.categoria }}</span>
+          <h6 class="card-title">{{ p.nombre }}</h6>
+          {% if p.precio_aprox is not none %}
+            <p class="fw-bold text-primary mb-3">
+              Desde ${{ "{:,.2f}".format(p.precio_aprox) }} <small class="text-muted fw-normal">MXN aprox.</small>
+            </p>
+          {% endif %}
+          <div class="d-flex gap-2 mt-auto">
+            <a href="{{ url_for('catalogo.detalle', id_producto=p.id_producto) }}"
+               class="btn btn-outline-primary btn-sm">Ver detalle</a>
+            {% if not current_user.is_authenticated or current_user.rol == 'cliente' %}
+              <a href="{{ url_for('catalogo.cotizar', id_producto=p.id_producto) }}" class="btn btn-primary btn-sm">Solicitar cotización</a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  {% else %}
+    <div class="col-12">
+      <div class="alert alert-light border text-center">
+        No se encontraron productos o servicios{% if q or categoria %} con esos filtros{% endif %}.
+      </div>
+    </div>
+  {% endfor %}
+</div>
+{% endblock %}

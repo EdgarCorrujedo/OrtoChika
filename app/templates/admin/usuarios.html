@@ -1,0 +1,19 @@
+{% extends "admin/layout.html" %}
+{% block panel %}
+<h3 class="mb-3">Usuarios</h3>
+<div class="table-responsive">
+  <table class="table table-striped align-middle bg-white shadow-sm">
+    <thead><tr><th>Nombre</th><th>Correo</th><th>Teléfono</th><th>Rol</th></tr></thead>
+    <tbody>
+      {% for u in usuarios %}
+        <tr>
+          <td>{{ u.nombre }}</td>
+          <td>{{ u.correo }}</td>
+          <td>{{ u.telefono or '—' }}</td>
+          <td><span class="badge text-bg-secondary">{{ u.rol }}</span></td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
